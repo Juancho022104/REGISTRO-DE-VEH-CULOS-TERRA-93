@@ -1,0 +1,27 @@
+name: Deploy a Apps Script
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  clasp-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Instalar clasp
+        run: npm install -g @google/clasp
+
+      - name: Configurar credenciales de clasp
+        run: echo '${{ secrets.CLASP_CREDENTIALS }}' > ~/.clasprc.json
+
+      - name: Subir proyecto a Apps Script
+        run: clasp push --force

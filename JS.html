@@ -1,0 +1,172 @@
+<script>
+
+window.onload = function () {
+  mostrarRegistroVehiculo();
+};
+
+//================================================
+// FORMULARIO REGISTRO DE VEHÍCULO
+//================================================
+
+function mostrarRegistroVehiculo() {
+  document.getElementById("contenido").innerHTML = `
+
+<div class="card">
+
+<div class="form-grid">
+
+<div class="form-group">
+<label>Apartamento</label>
+<input id="vehApto">
+</div>
+
+<div class="form-group">
+<label>Placa Vehículo</label>
+<input id="vehPlaca">
+</div>
+
+<div class="form-group">
+<label>Tipo de Vehículo</label>
+<select id="vehTipo">
+<option>Carro Eléctrico</option>
+<option>Carro Híbrido</option>
+<option>Motocicleta Eléctrica</option>
+<option>Otro</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Marca</label>
+<input id="vehMarca">
+</div>
+
+<div class="form-group">
+<label>Modelo</label>
+<input id="vehModelo">
+</div>
+
+<div class="form-group">
+<label>Color</label>
+<input id="vehColor">
+</div>
+
+<div class="form-group">
+<label>Nombre Residente</label>
+<input id="vehNombre">
+</div>
+
+<div class="form-group">
+<label>Cédula</label>
+<input id="vehCedula">
+</div>
+
+<div class="form-group">
+<label>Teléfono</label>
+<input id="vehTelefono" type="tel">
+</div>
+
+<div class="form-group">
+<label>Correo Residente</label>
+<input id="vehCorreo" type="email">
+</div>
+
+<div class="form-group full">
+<label>Observaciones</label>
+<textarea id="vehObservaciones"></textarea>
+</div>
+
+</div>
+
+<button class="btn-guardar" id="btnRegistrarVehiculo" onclick="registrarVehiculoForm()">💾 Registrar Vehículo</button>
+
+</div>
+
+`;
+}
+
+//================================================
+// VALIDACIÓN DE CORREO (cliente)
+//================================================
+
+function correoValido(correo) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+}
+
+//================================================
+// GUARDAR REGISTRO DE VEHÍCULO
+//================================================
+
+function registrarVehiculoForm() {
+  let datos = {
+    apto: document.getElementById("vehApto").value.trim().toUpperCase(),
+    placa: document.getElementById("vehPlaca").value.trim().toUpperCase(),
+    tipoVehiculo: document.getElementById("vehTipo").value,
+    marca: document.getElementById("vehMarca").value.trim(),
+    modelo: document.getElementById("vehModelo").value.trim(),
+    color: document.getElementById("vehColor").value.trim(),
+    nombre: document.getElementById("vehNombre").value.trim(),
+    cedula: document.getElementById("vehCedula").value.trim(),
+    telefono: document.getElementById("vehTelefono").value.trim(),
+    correoResidente: document.getElementById("vehCorreo").value.trim(),
+    observaciones: document.getElementById("vehObservaciones").value.trim()
+  };
+
+  if (datos.apto === "") {
+    alert("Ingrese apartamento");
+    return;
+  }
+
+  if (datos.placa === "") {
+    alert("Ingrese placa");
+    return;
+  }
+
+  if (datos.nombre === "") {
+    alert("Ingrese nombre residente");
+    return;
+  }
+
+  if (datos.cedula === "") {
+    alert("Ingrese cédula del residente");
+    return;
+  }
+
+  if (datos.telefono === "") {
+    alert("Ingrese teléfono del residente");
+    return;
+  }
+
+  if (datos.correoResidente === "" || !correoValido(datos.correoResidente)) {
+    alert("Ingrese un correo válido para el residente");
+    return;
+  }
+
+  let boton = document.getElementById("btnRegistrarVehiculo");
+  boton.disabled = true;
+  boton.textContent = "Guardando...";
+
+  google.script.run
+    .withSuccessHandler(function (res) {
+      boton.disabled = false;
+      boton.textContent = "💾 Registrar Vehículo";
+
+      if (res.success) {
+        alert("✅ Vehículo registrado correctamente");
+        mostrarRegistroVehiculo();
+      } else {
+        alert(res.mensaje);
+      }
+    })
+    .withFailureHandler(function (error) {
+      boton.disabled = false;
+      boton.textContent = "💾 Registrar Vehículo";
+      alert("Error registrando vehículo: " + error.message);
+    })
+    .registrarVehiculo(datos);
+}
+
+//================================================
+// FIN JS
+//================================================
+
+</script>
