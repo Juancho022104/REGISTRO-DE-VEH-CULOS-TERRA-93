@@ -345,17 +345,3 @@ function probarConexion() {
     fecha: new Date()
   };
 }
-
-//======================================================
-// PRUEBA DE PERMISOS DE DRIVE
-// Ejecutar esta función UNA VEZ manualmente desde el editor
-// (Ejecutar ▶) para disparar la pantalla de autorización del
-// permiso de Google Drive. Sin esto, la app publicada no puede
-// subir los anexos para los usuarios anónimos.
-//======================================================
-
-function probarPermisosDrive() {
-  var carpeta = DriveApp.getFolderById(ID_CARPETA_DRIVE);
-  Logger.log("Acceso a Drive OK. Carpeta: " + carpeta.getName());
-  return "Acceso a Drive OK. Carpeta: " + carpeta.getName();
-}
