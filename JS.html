@@ -1,223 +1,24 @@
 <script>
 
 window.onload = function () {
-  mostrarFormulario();
+  cargarFormulario();
 };
 
 //================================================
-// FORMULARIO COMPLETO
+// CARGAR FORMULARIO (HTML servido bajo demanda)
 //================================================
 
-function mostrarFormulario() {
-  document.getElementById("contenido").innerHTML = `
-
-<div class="card">
-<h2>1. Datos del Titular del Inmueble</h2>
-
-<div class="form-grid">
-
-<div class="form-group full">
-<label>Nombres y Apellidos / Razón Social</label>
-<input id="nombreTitular">
-</div>
-
-<div class="form-group">
-<label>Nº de Cédula / NIT</label>
-<input id="cedulaTitular">
-</div>
-
-<div class="form-group">
-<label>Apartamento</label>
-<input id="apto">
-</div>
-
-<div class="form-group">
-<label>Teléfono de Contacto</label>
-<input id="telefono" type="tel">
-</div>
-
-<div class="form-group">
-<label>Correo Electrónico</label>
-<input id="correo" type="email">
-</div>
-
-<div class="form-group full">
-<label>Calidad</label>
-<select id="calidad" onchange="actualizarCartaAutorizacion()">
-<option value="Propietario">Propietario</option>
-<option value="Arrendatario / Tenedor">Arrendatario / Tenedor (requiere autorización de propietario)</option>
-</select>
-</div>
-
-</div>
-</div>
-
-<div class="card">
-<h2>2. Identificación del Parqueadero</h2>
-
-<div class="form-grid">
-
-<div class="form-group">
-<label>Número de Parqueadero Privado / Asignado</label>
-<input id="numeroParqueadero">
-</div>
-
-<div class="form-group">
-<label>Ubicación / Sótano / Nivel</label>
-<input id="ubicacion">
-</div>
-
-</div>
-</div>
-
-<div class="card">
-<h2>3. Datos del Vehículo Eléctrico o Híbrido Enchufable</h2>
-
-<div class="form-grid">
-
-<div class="form-group full">
-<label>Tipo de Vehículo</label>
-<select id="tipoVehiculo">
-<option value="100% Eléctrico (BEV)">100% Eléctrico (BEV)</option>
-<option value="Híbrido Enchufable (PHEV)">Híbrido Enchufable (PHEV)</option>
-<option value="Otro">Otro</option>
-</select>
-</div>
-
-<div class="form-group">
-<label>Marca y Línea</label>
-<input id="marcaLinea">
-</div>
-
-<div class="form-group">
-<label>Placa del Vehículo</label>
-<input id="placa">
-</div>
-
-<div class="form-group">
-<label>Color</label>
-<input id="color">
-</div>
-
-<div class="form-group">
-<label>Capacidad de Batería (kWh)</label>
-<input id="capacidadBateria" type="number" min="0" step="0.1">
-</div>
-
-<div class="form-group">
-<label>Potencia de Carga Máxima (kW)</label>
-<input id="potenciaCarga" type="number" min="0" step="0.1">
-</div>
-
-<div class="form-group full">
-<label>Tipo de Conector / Conector de Carga</label>
-<select id="tipoConector">
-<option value="Tipo 1 (SAE J1772)">Tipo 1 (SAE J1772)</option>
-<option value="Tipo 2 (Mennekes)">Tipo 2 (Mennekes)</option>
-<option value="CCS2">CCS2</option>
-<option value="Otro">Otro</option>
-</select>
-</div>
-
-</div>
-</div>
-
-<div class="card">
-<h2>4. Anexos Obligatorios Adjuntos</h2>
-<p class="subtitulo">Adjunte cada documento en PDF o imagen legible.</p>
-
-<div class="anexo-item">
-<label>📄 Copia de la Tarjeta de Propiedad del Vehículo</label>
-<input id="anexoTarjetaPropiedad" type="file" accept="application/pdf,image/*">
-</div>
-
-<div class="anexo-item">
-<label>📄 Copia del SOAT</label>
-<input id="anexoSoat" type="file" accept="application/pdf,image/*">
-</div>
-
-<div class="anexo-item">
-<label>📄 Copia certificación tecnomecánica</label>
-<input id="anexoTecnomecanica" type="file" accept="application/pdf,image/*">
-</div>
-
-<div class="anexo-item">
-<label>📄 Certificación de instalación eléctrica / Ficha técnica del cargador</label>
-<input id="anexoCertificacionElectrica" type="file" accept="application/pdf,image/*">
-</div>
-
-<div class="anexo-item" id="itemCartaAutorizacion">
-<label>📄 Carta de autorización del propietario (obligatorio si es arrendatario)</label>
-<input id="anexoCartaAutorizacion" type="file" accept="application/pdf,image/*">
-<small>Solo obligatorio si la calidad seleccionada arriba es Arrendatario / Tenedor.</small>
-</div>
-
-<div class="anexo-item">
-<label>📄 Compromiso firmado de cumplimiento del Reglamento Interno para Cargadores Eléctricos</label>
-<input id="anexoCompromisoReglamento" type="file" accept="application/pdf,image/*">
-</div>
-
-</div>
-
-<div class="card">
-<h2>5. Cláusula de Tratamiento de Datos Personales (Habeas Data)</h2>
-<p class="subtitulo">
-En cumplimiento de la Ley Estatutaria 1581 de 2012, autorizo a Edificio Terra 93 PH a recolectar,
-almacenar y tratar los datos personales y vehiculares registrados en este formulario, con el fin de
-adelantar el censo de demanda energética, el control de acceso vehicular, la gestión del reglamento
-y capacidad técnica de la red eléctrica, así como la facturación o asignación de costos de consumo
-derivados de la recarga de vehículos eléctricos si aplicare. Puedo ejercer mis derechos de conocer,
-actualizar, rectificar y suprimir mis datos enviando una comunicación escrita al correo
-edificioterra93@gmail.com.
-</p>
-
-<div class="consentimiento">
-<input type="checkbox" id="aceptaHabeasData">
-<label for="aceptaHabeasData">Acepto el tratamiento de mis datos personales conforme a lo anterior.</label>
-</div>
-
-</div>
-
-<div class="card">
-<h2>Firma y Declaración de Compromiso</h2>
-<p class="subtitulo">
-Declaro que la información técnica y vehicular registrada en este documento es verídica y que
-acepto acatar los lineamientos de seguridad y el Reglamento Interno para Uso e Instalación de
-Puntos de Carga de Vehículos Eléctricos de la copropiedad.
-</p>
-
-<div class="form-grid">
-
-<div class="form-group">
-<label>Nombre Completo</label>
-<input id="nombreFirmante">
-</div>
-
-<div class="form-group">
-<label>C.C. / NIT</label>
-<input id="cedulaFirmante">
-</div>
-
-</div>
-
-<div class="canvas-box" style="margin-top:15px">
-<label>Firma del Solicitante / Propietario</label>
-<canvas id="firma"></canvas>
-</div>
-<button type="button" class="btn-borrar-firma" onclick="limpiarFirma()">🗑️ Borrar Firma</button>
-
-<div class="consentimiento" style="margin-top:18px">
-<input type="checkbox" id="aceptaReglamento">
-<label for="aceptaReglamento">Declaro que la información es verídica y acepto el Reglamento Interno para Uso e Instalación de Puntos de Carga.</label>
-</div>
-
-<button class="btn-guardar" id="btnRegistrar" onclick="registrarVehiculoForm()">💾 Enviar Solicitud</button>
-
-</div>
-
-`;
-
-  iniciarFirma();
+function cargarFormulario() {
+  google.script.run
+    .withSuccessHandler(function (html) {
+      document.getElementById("contenido").innerHTML = html;
+      iniciarFirma();
+    })
+    .withFailureHandler(function (error) {
+      document.getElementById("contenido").innerHTML =
+        "<div class='card'><p>No se pudo cargar el formulario: " + error.message + "</p></div>";
+    })
+    .obtenerFormularioHTML();
 }
 
 //================================================
@@ -516,7 +317,7 @@ function registrarVehiculoForm() {
 
         if (res.success) {
           alert("✅ Solicitud registrada correctamente");
-          mostrarFormulario();
+          cargarFormulario();
         } else {
           alert(res.mensaje);
         }

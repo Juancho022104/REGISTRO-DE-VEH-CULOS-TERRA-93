@@ -69,6 +69,19 @@ function include(nombreArchivo) {
 }
 
 //======================================================
+// HTML DEL FORMULARIO (servido bajo demanda vía google.script.run)
+//
+// La página inicial de doGet() tiene un límite de tamaño estricto en
+// este modo de entrega (sandbox). Por eso el HTML del formulario NO
+// va embebido en la página inicial: se pide al servidor después de
+// cargar, por el canal de google.script.run, que no tiene ese límite.
+//======================================================
+
+function obtenerFormularioHTML() {
+  return HtmlService.createHtmlOutputFromFile("Formulario").getContent();
+}
+
+//======================================================
 // HOJA DE REGISTRO (se crea sola si no existe)
 //======================================================
 
