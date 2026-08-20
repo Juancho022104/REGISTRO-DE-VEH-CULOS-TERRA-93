@@ -26,22 +26,3 @@ jobs:
 
       - name: Subir proyecto a Apps Script
         run: clasp push --force
-
-      - name: DIAGNOSTICO TEMPORAL - Verificar respuesta real del /exec
-        run: |
-          URL="https://script.google.com/macros/s/AKfycbxX7HUpwllwmCswSmZXW_HXCE4Yk78giBdMjZCvFcnKGFt5eyx4rAHrpaDpH_AqqQPDRA/exec"
-          curl -sL "$URL" -o /tmp/respuesta.html
-          echo "TAMAÑO EN BYTES:"
-          wc -c /tmp/respuesta.html
-          echo "----- MARCADORES ENCONTRADOS -----"
-          for marca in "anexoTarjetaPropiedad" "anexoSoat" "anexoTecnomecanica" "anexoCertificacionElectrica" "anexoCartaAutorizacion" "anexoCompromisoReglamento" "aceptaHabeasData" "aceptaReglamento" "iniciarFirma" "FIN JS"; do
-            if grep -q "$marca" /tmp/respuesta.html; then
-              echo "SI  -> $marca"
-            else
-              echo "NO  -> $marca"
-            fi
-          done
-          echo "----- LONGITUD DEL CAMPO userHtml (aprox, en caracteres escapados) -----"
-          grep -o '\\x22userHtml\\x22:\\x22.*\\x22,\\x22ncc\\x22' /tmp/respuesta.html | wc -c
-          echo "----- ULTIMOS 400 CARACTERES DEL BLOQUE userHtml -----"
-          python3 diagnostico_temp.py
