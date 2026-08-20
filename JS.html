@@ -1,87 +1,238 @@
 <script>
 
 window.onload = function () {
-  mostrarRegistroVehiculo();
+  mostrarFormulario();
 };
 
 //================================================
-// FORMULARIO REGISTRO DE VEHÍCULO
+// FORMULARIO COMPLETO
 //================================================
 
-function mostrarRegistroVehiculo() {
+function mostrarFormulario() {
   document.getElementById("contenido").innerHTML = `
 
 <div class="card">
+<h2>1. Datos del Titular del Inmueble</h2>
+
+<div class="form-grid">
+
+<div class="form-group full">
+<label>Nombres y Apellidos / Razón Social</label>
+<input id="nombreTitular">
+</div>
+
+<div class="form-group">
+<label>Nº de Cédula / NIT</label>
+<input id="cedulaTitular">
+</div>
+
+<div class="form-group">
+<label>Apartamento</label>
+<input id="apto">
+</div>
+
+<div class="form-group">
+<label>Teléfono de Contacto</label>
+<input id="telefono" type="tel">
+</div>
+
+<div class="form-group">
+<label>Correo Electrónico</label>
+<input id="correo" type="email">
+</div>
+
+<div class="form-group full">
+<label>Calidad</label>
+<select id="calidad" onchange="actualizarCartaAutorizacion()">
+<option value="Propietario">Propietario</option>
+<option value="Arrendatario / Tenedor">Arrendatario / Tenedor (requiere autorización de propietario)</option>
+</select>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h2>2. Identificación del Parqueadero</h2>
 
 <div class="form-grid">
 
 <div class="form-group">
-<label>Apartamento</label>
-<input id="vehApto">
+<label>Número de Parqueadero Privado / Asignado</label>
+<input id="numeroParqueadero">
 </div>
 
 <div class="form-group">
-<label>Placa Vehículo</label>
-<input id="vehPlaca">
+<label>Ubicación / Sótano / Nivel</label>
+<input id="ubicacion">
 </div>
 
-<div class="form-group">
+</div>
+</div>
+
+<div class="card">
+<h2>3. Datos del Vehículo Eléctrico o Híbrido Enchufable</h2>
+
+<div class="form-grid">
+
+<div class="form-group full">
 <label>Tipo de Vehículo</label>
-<select id="vehTipo">
-<option>Carro Eléctrico</option>
-<option>Carro Híbrido</option>
-<option>Motocicleta Eléctrica</option>
-<option>Otro</option>
+<select id="tipoVehiculo">
+<option value="100% Eléctrico (BEV)">100% Eléctrico (BEV)</option>
+<option value="Híbrido Enchufable (PHEV)">Híbrido Enchufable (PHEV)</option>
+<option value="Otro">Otro</option>
 </select>
 </div>
 
 <div class="form-group">
-<label>Marca</label>
-<input id="vehMarca">
+<label>Marca y Línea</label>
+<input id="marcaLinea">
 </div>
 
 <div class="form-group">
-<label>Modelo</label>
-<input id="vehModelo">
+<label>Placa del Vehículo</label>
+<input id="placa">
 </div>
 
 <div class="form-group">
 <label>Color</label>
-<input id="vehColor">
+<input id="color">
 </div>
 
 <div class="form-group">
-<label>Nombre Residente</label>
-<input id="vehNombre">
+<label>Capacidad de Batería (kWh)</label>
+<input id="capacidadBateria" type="number" min="0" step="0.1">
 </div>
 
 <div class="form-group">
-<label>Cédula</label>
-<input id="vehCedula">
-</div>
-
-<div class="form-group">
-<label>Teléfono</label>
-<input id="vehTelefono" type="tel">
-</div>
-
-<div class="form-group">
-<label>Correo Residente</label>
-<input id="vehCorreo" type="email">
+<label>Potencia de Carga Máxima (kW)</label>
+<input id="potenciaCarga" type="number" min="0" step="0.1">
 </div>
 
 <div class="form-group full">
-<label>Observaciones</label>
-<textarea id="vehObservaciones"></textarea>
+<label>Tipo de Conector / Conector de Carga</label>
+<select id="tipoConector">
+<option value="Tipo 1 (SAE J1772)">Tipo 1 (SAE J1772)</option>
+<option value="Tipo 2 (Mennekes)">Tipo 2 (Mennekes)</option>
+<option value="CCS2">CCS2</option>
+<option value="Otro">Otro</option>
+</select>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h2>4. Anexos Obligatorios Adjuntos</h2>
+<p class="subtitulo">Adjunte cada documento en PDF o imagen legible.</p>
+
+<div class="anexo-item">
+<label>📄 Copia de la Tarjeta de Propiedad del Vehículo</label>
+<input id="anexoTarjetaPropiedad" type="file" accept="application/pdf,image/*">
+</div>
+
+<div class="anexo-item">
+<label>📄 Copia del SOAT</label>
+<input id="anexoSoat" type="file" accept="application/pdf,image/*">
+</div>
+
+<div class="anexo-item">
+<label>📄 Copia certificación tecnomecánica</label>
+<input id="anexoTecnomecanica" type="file" accept="application/pdf,image/*">
+</div>
+
+<div class="anexo-item">
+<label>📄 Certificación de instalación eléctrica / Ficha técnica del cargador</label>
+<input id="anexoCertificacionElectrica" type="file" accept="application/pdf,image/*">
+</div>
+
+<div class="anexo-item" id="itemCartaAutorizacion">
+<label>📄 Carta de autorización del propietario (obligatorio si es arrendatario)</label>
+<input id="anexoCartaAutorizacion" type="file" accept="application/pdf,image/*">
+<small>Solo obligatorio si la calidad seleccionada arriba es "Arrendatario / Tenedor".</small>
+</div>
+
+<div class="anexo-item">
+<label>📄 Compromiso firmado de cumplimiento del Reglamento Interno para Cargadores Eléctricos</label>
+<input id="anexoCompromisoReglamento" type="file" accept="application/pdf,image/*">
 </div>
 
 </div>
 
-<button class="btn-guardar" id="btnRegistrarVehiculo" onclick="registrarVehiculoForm()">💾 Registrar Vehículo</button>
+<div class="card">
+<h2>5. Cláusula de Tratamiento de Datos Personales (Habeas Data)</h2>
+<p class="subtitulo">
+En cumplimiento de la Ley Estatutaria 1581 de 2012, autorizo a Edificio Terra 93 PH a recolectar,
+almacenar y tratar los datos personales y vehiculares registrados en este formulario, con el fin de
+adelantar el censo de demanda energética, el control de acceso vehicular, la gestión del reglamento
+y capacidad técnica de la red eléctrica, así como la facturación o asignación de costos de consumo
+derivados de la recarga de vehículos eléctricos si aplicare. Puedo ejercer mis derechos de conocer,
+actualizar, rectificar y suprimir mis datos enviando una comunicación escrita al correo
+edificioterra93@gmail.com.
+</p>
+
+<div class="consentimiento">
+<input type="checkbox" id="aceptaHabeasData">
+<label for="aceptaHabeasData">Acepto el tratamiento de mis datos personales conforme a lo anterior.</label>
+</div>
+
+</div>
+
+<div class="card">
+<h2>Firma y Declaración de Compromiso</h2>
+<p class="subtitulo">
+Declaro que la información técnica y vehicular registrada en este documento es verídica y que
+acepto acatar los lineamientos de seguridad y el Reglamento Interno para Uso e Instalación de
+Puntos de Carga de Vehículos Eléctricos de la copropiedad.
+</p>
+
+<div class="form-grid">
+
+<div class="form-group">
+<label>Nombre Completo</label>
+<input id="nombreFirmante">
+</div>
+
+<div class="form-group">
+<label>C.C. / NIT</label>
+<input id="cedulaFirmante">
+</div>
+
+</div>
+
+<div class="canvas-box" style="margin-top:15px">
+<label>Firma del Solicitante / Propietario</label>
+<canvas id="firma"></canvas>
+</div>
+<button type="button" class="btn-borrar-firma" onclick="limpiarFirma()">🗑️ Borrar Firma</button>
+
+<div class="consentimiento" style="margin-top:18px">
+<input type="checkbox" id="aceptaReglamento">
+<label for="aceptaReglamento">Declaro que la información es verídica y acepto el Reglamento Interno para Uso e Instalación de Puntos de Carga.</label>
+</div>
+
+<button class="btn-guardar" id="btnRegistrar" onclick="registrarVehiculoForm()">💾 Enviar Solicitud</button>
 
 </div>
 
 `;
+
+  iniciarFirma();
+}
+
+//================================================
+// MOSTRAR / OCULTAR OBLIGATORIEDAD CARTA AUTORIZACIÓN
+//================================================
+
+function actualizarCartaAutorizacion() {
+  var calidad = document.getElementById("calidad").value;
+  var item = document.getElementById("itemCartaAutorizacion");
+
+  if (!item) {
+    return;
+  }
+
+  item.style.borderColor = calidad === "Arrendatario / Tenedor" ? "#f59e0b" : "#dbe4ea";
 }
 
 //================================================
@@ -93,76 +244,290 @@ function correoValido(correo) {
 }
 
 //================================================
-// GUARDAR REGISTRO DE VEHÍCULO
+// FIRMA DIGITAL CANVAS
+//================================================
+
+let canvasFirma;
+let ctxFirma;
+let firmaTrazada = false;
+
+function iniciarFirma() {
+  canvasFirma = document.getElementById("firma");
+
+  if (!canvasFirma) {
+    return;
+  }
+
+  firmaTrazada = false;
+
+  let ancho = canvasFirma.parentElement.offsetWidth;
+  canvasFirma.width = ancho;
+  canvasFirma.height = 130;
+
+  ctxFirma = canvasFirma.getContext("2d");
+  ctxFirma.strokeStyle = "#000";
+
+  let dibujando = false;
+
+  function posicion(e) {
+    let rect = canvasFirma.getBoundingClientRect();
+
+    if (e.touches) {
+      return {
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top
+      };
+    }
+
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+  }
+
+  function iniciar(e) {
+    e.preventDefault();
+    dibujando = true;
+    firmaTrazada = true;
+
+    let pos = posicion(e);
+    ctxFirma.beginPath();
+    ctxFirma.moveTo(pos.x, pos.y);
+  }
+
+  function dibujar(e) {
+    if (!dibujando) {
+      return;
+    }
+
+    e.preventDefault();
+
+    let pos = posicion(e);
+
+    ctxFirma.lineWidth = 2;
+    ctxFirma.lineCap = "round";
+    ctxFirma.lineJoin = "round";
+
+    ctxFirma.lineTo(pos.x, pos.y);
+    ctxFirma.stroke();
+  }
+
+  function terminar() {
+    dibujando = false;
+  }
+
+  canvasFirma.addEventListener("mousedown", iniciar);
+  canvasFirma.addEventListener("mousemove", dibujar);
+  canvasFirma.addEventListener("mouseup", terminar);
+  canvasFirma.addEventListener("mouseleave", terminar);
+
+  canvasFirma.addEventListener("touchstart", iniciar, { passive: false });
+  canvasFirma.addEventListener("touchmove", dibujar, { passive: false });
+  canvasFirma.addEventListener("touchend", terminar);
+}
+
+function limpiarFirma() {
+  if (ctxFirma) {
+    ctxFirma.clearRect(0, 0, canvasFirma.width, canvasFirma.height);
+    firmaTrazada = false;
+  }
+}
+
+//================================================
+// CONVERTIR ARCHIVO A BASE64
+//================================================
+
+function convertirArchivoBase64(input) {
+  return new Promise(function (resolve) {
+    if (!input || !input.files || input.files.length === 0) {
+      resolve("");
+      return;
+    }
+
+    let lector = new FileReader();
+
+    lector.onload = function (e) {
+      resolve(e.target.result);
+    };
+
+    lector.onerror = function () {
+      resolve("");
+    };
+
+    lector.readAsDataURL(input.files[0]);
+  });
+}
+
+//================================================
+// GUARDAR SOLICITUD
 //================================================
 
 function registrarVehiculoForm() {
   let datos = {
-    apto: document.getElementById("vehApto").value.trim().toUpperCase(),
-    placa: document.getElementById("vehPlaca").value.trim().toUpperCase(),
-    tipoVehiculo: document.getElementById("vehTipo").value,
-    marca: document.getElementById("vehMarca").value.trim(),
-    modelo: document.getElementById("vehModelo").value.trim(),
-    color: document.getElementById("vehColor").value.trim(),
-    nombre: document.getElementById("vehNombre").value.trim(),
-    cedula: document.getElementById("vehCedula").value.trim(),
-    telefono: document.getElementById("vehTelefono").value.trim(),
-    correoResidente: document.getElementById("vehCorreo").value.trim(),
-    observaciones: document.getElementById("vehObservaciones").value.trim()
+    nombreTitular: document.getElementById("nombreTitular").value.trim(),
+    cedulaTitular: document.getElementById("cedulaTitular").value.trim(),
+    apto: document.getElementById("apto").value.trim().toUpperCase(),
+    telefono: document.getElementById("telefono").value.trim(),
+    correo: document.getElementById("correo").value.trim(),
+    calidad: document.getElementById("calidad").value,
+    numeroParqueadero: document.getElementById("numeroParqueadero").value.trim(),
+    ubicacion: document.getElementById("ubicacion").value.trim(),
+    tipoVehiculo: document.getElementById("tipoVehiculo").value,
+    marcaLinea: document.getElementById("marcaLinea").value.trim(),
+    placa: document.getElementById("placa").value.trim().toUpperCase(),
+    color: document.getElementById("color").value.trim(),
+    capacidadBateria: document.getElementById("capacidadBateria").value,
+    potenciaCarga: document.getElementById("potenciaCarga").value,
+    tipoConector: document.getElementById("tipoConector").value,
+    nombreFirmante: document.getElementById("nombreFirmante").value.trim(),
+    cedulaFirmante: document.getElementById("cedulaFirmante").value.trim(),
+    aceptaHabeasData: document.getElementById("aceptaHabeasData").checked,
+    aceptaReglamento: document.getElementById("aceptaReglamento").checked
   };
 
+  // VALIDACIONES BÁSICAS EN CLIENTE
+
+  if (datos.nombreTitular === "") {
+    alert("Ingrese el nombre del titular");
+    return;
+  }
+
+  if (datos.cedulaTitular === "") {
+    alert("Ingrese la cédula / NIT del titular");
+    return;
+  }
+
   if (datos.apto === "") {
-    alert("Ingrese apartamento");
-    return;
-  }
-
-  if (datos.placa === "") {
-    alert("Ingrese placa");
-    return;
-  }
-
-  if (datos.nombre === "") {
-    alert("Ingrese nombre residente");
-    return;
-  }
-
-  if (datos.cedula === "") {
-    alert("Ingrese cédula del residente");
+    alert("Ingrese el apartamento");
     return;
   }
 
   if (datos.telefono === "") {
-    alert("Ingrese teléfono del residente");
+    alert("Ingrese el teléfono de contacto");
     return;
   }
 
-  if (datos.correoResidente === "" || !correoValido(datos.correoResidente)) {
-    alert("Ingrese un correo válido para el residente");
+  if (datos.correo === "" || !correoValido(datos.correo)) {
+    alert("Ingrese un correo electrónico válido");
     return;
   }
 
-  let boton = document.getElementById("btnRegistrarVehiculo");
+  if (datos.numeroParqueadero === "") {
+    alert("Ingrese el número de parqueadero");
+    return;
+  }
+
+  if (datos.marcaLinea === "") {
+    alert("Ingrese la marca y línea del vehículo");
+    return;
+  }
+
+  if (datos.placa === "") {
+    alert("Ingrese la placa del vehículo");
+    return;
+  }
+
+  let inputTarjeta = document.getElementById("anexoTarjetaPropiedad");
+  let inputSoat = document.getElementById("anexoSoat");
+  let inputTecnomecanica = document.getElementById("anexoTecnomecanica");
+  let inputCertificacionElectrica = document.getElementById("anexoCertificacionElectrica");
+  let inputCartaAutorizacion = document.getElementById("anexoCartaAutorizacion");
+  let inputCompromisoReglamento = document.getElementById("anexoCompromisoReglamento");
+
+  if (!inputTarjeta.files.length) {
+    alert("Adjunte la copia de la tarjeta de propiedad del vehículo");
+    return;
+  }
+
+  if (!inputSoat.files.length) {
+    alert("Adjunte la copia del SOAT");
+    return;
+  }
+
+  if (!inputTecnomecanica.files.length) {
+    alert("Adjunte la copia de la certificación tecnomecánica");
+    return;
+  }
+
+  if (!inputCertificacionElectrica.files.length) {
+    alert("Adjunte la certificación de instalación eléctrica / ficha técnica del cargador");
+    return;
+  }
+
+  if (datos.calidad === "Arrendatario / Tenedor" && !inputCartaAutorizacion.files.length) {
+    alert("Al ser arrendatario, debe adjuntar la carta de autorización del propietario");
+    return;
+  }
+
+  if (!inputCompromisoReglamento.files.length) {
+    alert("Adjunte el compromiso firmado de cumplimiento del Reglamento Interno");
+    return;
+  }
+
+  if (datos.nombreFirmante === "") {
+    alert("Ingrese el nombre completo del firmante");
+    return;
+  }
+
+  if (datos.cedulaFirmante === "") {
+    alert("Ingrese la cédula / NIT del firmante");
+    return;
+  }
+
+  if (!firmaTrazada) {
+    alert("Falta la firma del solicitante");
+    return;
+  }
+
+  if (!datos.aceptaHabeasData) {
+    alert("Debe aceptar la cláusula de tratamiento de datos personales (Habeas Data)");
+    return;
+  }
+
+  if (!datos.aceptaReglamento) {
+    alert("Debe aceptar la declaración de compromiso y el Reglamento Interno");
+    return;
+  }
+
+  let boton = document.getElementById("btnRegistrar");
   boton.disabled = true;
-  boton.textContent = "Guardando...";
+  boton.textContent = "Enviando...";
 
-  google.script.run
-    .withSuccessHandler(function (res) {
-      boton.disabled = false;
-      boton.textContent = "💾 Registrar Vehículo";
+  Promise.all([
+    convertirArchivoBase64(inputTarjeta),
+    convertirArchivoBase64(inputSoat),
+    convertirArchivoBase64(inputTecnomecanica),
+    convertirArchivoBase64(inputCertificacionElectrica),
+    convertirArchivoBase64(inputCartaAutorizacion),
+    convertirArchivoBase64(inputCompromisoReglamento)
+  ]).then(function (archivos) {
+    datos.anexoTarjetaPropiedad = archivos[0];
+    datos.anexoSoat = archivos[1];
+    datos.anexoTecnomecanica = archivos[2];
+    datos.anexoCertificacionElectrica = archivos[3];
+    datos.anexoCartaAutorizacion = archivos[4];
+    datos.anexoCompromisoReglamento = archivos[5];
+    datos.firma = canvasFirma.toDataURL("image/png");
 
-      if (res.success) {
-        alert("✅ Vehículo registrado correctamente");
-        mostrarRegistroVehiculo();
-      } else {
-        alert(res.mensaje);
-      }
-    })
-    .withFailureHandler(function (error) {
-      boton.disabled = false;
-      boton.textContent = "💾 Registrar Vehículo";
-      alert("Error registrando vehículo: " + error.message);
-    })
-    .registrarVehiculo(datos);
+    google.script.run
+      .withSuccessHandler(function (res) {
+        boton.disabled = false;
+        boton.textContent = "💾 Enviar Solicitud";
+
+        if (res.success) {
+          alert("✅ Solicitud registrada correctamente");
+          mostrarFormulario();
+        } else {
+          alert(res.mensaje);
+        }
+      })
+      .withFailureHandler(function (error) {
+        boton.disabled = false;
+        boton.textContent = "💾 Enviar Solicitud";
+        alert("Error registrando la solicitud: " + error.message);
+      })
+      .registrarVehiculo(datos);
+  });
 }
 
 //================================================
