@@ -13,6 +13,18 @@ jobs:
       - name: Descargar código
         uses: actions/checkout@v4
 
+      - name: Verificar tamaño de la página inicial (Index.html + CSS.html + JS.html)
+        run: |
+          TOTAL=$(cat Index.html CSS.html JS.html 2>/dev/null | wc -c)
+          LIMITE=15000
+          echo "Tamaño combinado de la página inicial: $TOTAL bytes (límite seguro: $LIMITE bytes)"
+          if [ "$TOTAL" -gt "$LIMITE" ]; then
+            echo "::error::La página inicial (Index.html + CSS.html + JS.html) pesa $TOTAL bytes, por encima del límite seguro de $LIMITE."
+            echo "::error::Apps Script trunca en silencio el contenido de doGet() cuando la página inicial es demasiado grande (ver CLAUDE.md)."
+            echo "::error::Mueve el contenido nuevo a un archivo .html servido bajo demanda con google.script.run (como Formulario.html), no lo agregues directo a Index.html/CSS.html/JS.html."
+            exit 1
+          fi
+
       - name: Instalar Node
         uses: actions/setup-node@v4
         with:
