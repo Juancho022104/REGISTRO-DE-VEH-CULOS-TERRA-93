@@ -32,10 +32,26 @@ jobs:
           curl -sL "$URL" -o /tmp/respuesta.html
           echo "TAMAÑO EN BYTES:"
           wc -c /tmp/respuesta.html
-          echo "----- CONTIENE 'FIN JS'? -----"
-          grep -c "FIN JS" /tmp/respuesta.html || echo "NO ENCONTRADO"
-          echo "----- CONTIENE '</html>' AL FINAL? -----"
-          tail -c 300 /tmp/respuesta.html
-          echo ""
-          echo "----- BUSCANDO 'createOAuthDialog' -----"
-          grep -o "createOAuthDialog[^\"]*" /tmp/respuesta.html || echo "NO ENCONTRADO"
+          echo "----- MARCADORES ENCONTRADOS -----"
+          for marca in "anexoTarjetaPropiedad" "anexoSoat" "anexoTecnomecanica" "anexoCertificacionElectrica" "anexoCartaAutorizacion" "anexoCompromisoReglamento" "aceptaHabeasData" "aceptaReglamento" "iniciarFirma" "FIN JS"; do
+            if grep -q "$marca" /tmp/respuesta.html; then
+              echo "SI  -> $marca"
+            else
+              echo "NO  -> $marca"
+            fi
+          done
+          echo "----- LONGITUD DEL CAMPO userHtml (aprox, en caracteres escapados) -----"
+          grep -o '\\x22userHtml\\x22:\\x22.*\\x22,\\x22ncc\\x22' /tmp/respuesta.html | wc -c
+          echo "----- ULTIMOS 400 CARACTERES DEL BLOQUE userHtml -----"
+          python3 -c "
+data = open('/tmp/respuesta.html', encoding='utf-8', errors='replace').read()
+start = data.find('userHtml')
+end = data.find('\"ncc\"')
+if start != -1 and end != -1:
+    snippet = data[start:end]
+    print('LONGITUD DEL BLOQUE userHtml (caracteres):', len(snippet))
+    print('ULTIMOS 400 CARACTERES:')
+    print(snippet[-400:])
+else:
+    print('NO SE ENCONTRO EL BLOQUE userHtml')
+"
