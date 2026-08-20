@@ -25,3 +25,17 @@ jobs:
 
       - name: Subir proyecto a Apps Script
         run: clasp push --force
+
+      - name: DIAGNOSTICO TEMPORAL - Verificar respuesta real del /exec
+        run: |
+          URL="https://script.google.com/macros/s/AKfycbxX7HUpwllwmCswSmZXW_HXCE4Yk78giBdMjZCvFcnKGFt5eyx4rAHrpaDpH_AqqQPDRA/exec"
+          curl -sL "$URL" -o /tmp/respuesta.html
+          echo "TAMAÑO EN BYTES:"
+          wc -c /tmp/respuesta.html
+          echo "----- CONTIENE 'FIN JS'? -----"
+          grep -c "FIN JS" /tmp/respuesta.html || echo "NO ENCONTRADO"
+          echo "----- CONTIENE '</html>' AL FINAL? -----"
+          tail -c 300 /tmp/respuesta.html
+          echo ""
+          echo "----- BUSCANDO 'createOAuthDialog' -----"
+          grep -o "createOAuthDialog[^\"]*" /tmp/respuesta.html || echo "NO ENCONTRADO"
