@@ -39,6 +39,7 @@ const ENCABEZADOS_HOJA = [
   "Anexo - SOAT (URL)",
   "Anexo - Tecnomecánica (URL)",
   "Anexo - Certificación Eléctrica / Ficha Cargador (URL)",
+  "Anexo - Certificación RETIE del Cargador (URL)",
   "Anexo - Carta Autorización Propietario (URL)",
   "Anexo - Compromiso Reglamento Interno (URL)",
   "Nombre Completo Firmante",
@@ -243,6 +244,10 @@ function validarSolicitud(datos) {
     throw new Error("Adjunte la certificación de instalación eléctrica / ficha técnica del cargador.");
   }
 
+  if (!datos.anexoCertificacionRetie) {
+    throw new Error("Adjunte la certificación RETIE del cargador.");
+  }
+
   if (datos.calidad === "Arrendatario / Tenedor" && !datos.anexoCartaAutorizacion) {
     throw new Error("Al ser arrendatario, debe adjuntar la carta de autorización del propietario.");
   }
@@ -298,6 +303,7 @@ function registrarVehiculo(datos) {
     var urlSoat = subirAnexoDrive(datos.anexoSoat, datos.apto, datos.placa, "SOAT");
     var urlTecnomecanica = subirAnexoDrive(datos.anexoTecnomecanica, datos.apto, datos.placa, "Tecnomecanica");
     var urlCertificacionElectrica = subirAnexoDrive(datos.anexoCertificacionElectrica, datos.apto, datos.placa, "CertificacionElectrica");
+    var urlCertificacionRetie = subirAnexoDrive(datos.anexoCertificacionRetie, datos.apto, datos.placa, "CertificacionRETIE");
     var urlCartaAutorizacion = subirAnexoDrive(datos.anexoCartaAutorizacion, datos.apto, datos.placa, "CartaAutorizacion");
     var urlCompromisoReglamento = subirAnexoDrive(datos.anexoCompromisoReglamento, datos.apto, datos.placa, "CompromisoReglamento");
     var urlFirma = subirAnexoDrive(datos.firma, datos.apto, datos.placa, "Firma");
@@ -325,6 +331,7 @@ function registrarVehiculo(datos) {
       urlSoat,
       urlTecnomecanica,
       urlCertificacionElectrica,
+      urlCertificacionRetie,
       urlCartaAutorizacion,
       urlCompromisoReglamento,
       datos.nombreFirmante,

@@ -232,6 +232,7 @@ function registrarVehiculoForm() {
   let inputSoat = document.getElementById("anexoSoat");
   let inputTecnomecanica = document.getElementById("anexoTecnomecanica");
   let inputCertificacionElectrica = document.getElementById("anexoCertificacionElectrica");
+  let inputCertificacionRetie = document.getElementById("anexoCertificacionRetie");
   let inputCartaAutorizacion = document.getElementById("anexoCartaAutorizacion");
   let inputCompromisoReglamento = document.getElementById("anexoCompromisoReglamento");
 
@@ -252,6 +253,11 @@ function registrarVehiculoForm() {
 
   if (!inputCertificacionElectrica.files.length) {
     alert("Adjunte la certificación de instalación eléctrica / ficha técnica del cargador");
+    return;
+  }
+
+  if (!inputCertificacionRetie.files.length) {
+    alert("Adjunte la certificación RETIE del cargador");
     return;
   }
 
@@ -299,6 +305,7 @@ function registrarVehiculoForm() {
     convertirArchivoBase64(inputSoat),
     convertirArchivoBase64(inputTecnomecanica),
     convertirArchivoBase64(inputCertificacionElectrica),
+    convertirArchivoBase64(inputCertificacionRetie),
     convertirArchivoBase64(inputCartaAutorizacion),
     convertirArchivoBase64(inputCompromisoReglamento)
   ]).then(function (archivos) {
@@ -306,8 +313,9 @@ function registrarVehiculoForm() {
     datos.anexoSoat = archivos[1];
     datos.anexoTecnomecanica = archivos[2];
     datos.anexoCertificacionElectrica = archivos[3];
-    datos.anexoCartaAutorizacion = archivos[4];
-    datos.anexoCompromisoReglamento = archivos[5];
+    datos.anexoCertificacionRetie = archivos[4];
+    datos.anexoCartaAutorizacion = archivos[5];
+    datos.anexoCompromisoReglamento = archivos[6];
     datos.firma = canvasFirma.toDataURL("image/png");
 
     google.script.run
