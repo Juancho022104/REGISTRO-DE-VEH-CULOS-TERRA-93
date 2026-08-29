@@ -124,9 +124,29 @@ function obtenerCarpetaApto(apto) {
   var nombreCarpeta = "Apto " + apto;
   var carpetas = carpetaPrincipal.getFoldersByName(nombreCarpeta);
 
-  return carpetas.hasNext()
-    ? carpetas.next()
-    : carpetaPrincipal.createFolder(nombreCarpeta);
+  var carpeta;
+
+  if (carpetas.hasNext()) {
+    carpeta = carpetas.next();
+
+    // Carpetas creadas antes de este cambio no tienen el permiso a
+    // nivel de carpeta todavía: se corrige una sola vez por carpeta.
+    if (carpeta.getSharingAccess() !== DriveApp.Access.ANYONE_WITH_LINK) {
+      carpeta.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    }
+
+    return carpeta;
+  }
+
+  carpeta = carpetaPrincipal.createFolder(nombreCarpeta);
+
+  // El permiso se pone una sola vez sobre la carpeta (no por archivo):
+  // los archivos creados dentro heredan el acceso de la carpeta, y
+  // "setSharing" por archivo es la llamada más lenta de Drive - hacerla
+  // 7 veces por solicitud era buena parte de la demora del registro.
+  carpeta.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+
+  return carpeta;
 }
 
 //======================================================
@@ -155,11 +175,6 @@ function subirAnexoDrive(base64, carpetaApto, apto, placa, nombreDocumento) {
   );
 
   var archivo = carpetaApto.createFile(blob);
-
-  archivo.setSharing(
-    DriveApp.Access.ANYONE_WITH_LINK,
-    DriveApp.Permission.VIEW
-  );
 
   return archivo.getUrl();
 }

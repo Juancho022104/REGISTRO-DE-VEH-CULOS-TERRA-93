@@ -138,10 +138,26 @@ function limpiarFirma() {
 // CONVERTIR ARCHIVO A BASE64
 //================================================
 
+// Las fotos tomadas con la cámara del celular suelen pesar varios MB.
+// Enviar eso tal cual por google.script.run (más el ~33% que añade
+// base64) es la causa principal de que el envío se sienta lento, sobre
+// todo con datos móviles. Por eso las imágenes se reducen en el propio
+// navegador (lado máximo 1600px, JPEG calidad 0.75) antes de adjuntarlas;
+// los PDF se envían sin tocar porque no se pueden re-comprimir así.
+const ANEXO_MAX_LADO_PX = 1600;
+const ANEXO_CALIDAD_JPEG = 0.75;
+
 function convertirArchivoBase64(input) {
   return new Promise(function (resolve) {
     if (!input || !input.files || input.files.length === 0) {
       resolve("");
+      return;
+    }
+
+    let archivo = input.files[0];
+
+    if (archivo.type && archivo.type.indexOf("image/") === 0) {
+      comprimirImagen(archivo).then(resolve);
       return;
     }
 
@@ -155,7 +171,49 @@ function convertirArchivoBase64(input) {
       resolve("");
     };
 
-    lector.readAsDataURL(input.files[0]);
+    lector.readAsDataURL(archivo);
+  });
+}
+
+function comprimirImagen(archivo) {
+  return new Promise(function (resolve) {
+    let lector = new FileReader();
+
+    lector.onload = function (e) {
+      let img = new Image();
+
+      img.onload = function () {
+        let ancho = img.width;
+        let alto = img.height;
+        let ladoMayor = Math.max(ancho, alto);
+
+        if (ladoMayor > ANEXO_MAX_LADO_PX) {
+          let escala = ANEXO_MAX_LADO_PX / ladoMayor;
+          ancho = Math.round(ancho * escala);
+          alto = Math.round(alto * escala);
+        }
+
+        let canvas = document.createElement("canvas");
+        canvas.width = ancho;
+        canvas.height = alto;
+
+        canvas.getContext("2d").drawImage(img, 0, 0, ancho, alto);
+
+        resolve(canvas.toDataURL("image/jpeg", ANEXO_CALIDAD_JPEG));
+      };
+
+      img.onerror = function () {
+        resolve(e.target.result);
+      };
+
+      img.src = e.target.result;
+    };
+
+    lector.onerror = function () {
+      resolve("");
+    };
+
+    lector.readAsDataURL(archivo);
   });
 }
 
