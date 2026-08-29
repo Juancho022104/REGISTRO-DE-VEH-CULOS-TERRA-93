@@ -102,8 +102,8 @@ function obtenerHojaRegistro() {
 // BUSCAR VEHÍCULO YA REGISTRADO POR PLACA
 //======================================================
 
-function buscarVehiculoRegistrado(placa) {
-  var hoja = obtenerHojaRegistro();
+function buscarVehiculoRegistrado(placa, hoja) {
+  hoja = hoja || obtenerHojaRegistro();
   var datos = hoja.getDataRange().getValues();
 
   for (var i = 1; i < datos.length; i++) {
@@ -133,7 +133,7 @@ function obtenerCarpetaApto(apto) {
 // SUBIR ANEXO A GOOGLE DRIVE (carpeta del apartamento)
 //======================================================
 
-function subirAnexoDrive(base64, apto, placa, nombreDocumento) {
+function subirAnexoDrive(base64, carpetaApto, apto, placa, nombreDocumento) {
   if (!base64) {
     return "";
   }
@@ -145,8 +145,6 @@ function subirAnexoDrive(base64, apto, placa, nombreDocumento) {
   var coincidencia = cabecera.match(/data:(.*);base64/);
   var mime = coincidencia ? coincidencia[1] : "application/pdf";
   var extension = mime.split("/")[1] || "pdf";
-
-  var carpetaApto = obtenerCarpetaApto(apto);
 
   var nombreArchivo = String(apto) + "_" + String(placa) + "_" + nombreDocumento + "." + extension;
 
@@ -285,7 +283,8 @@ function registrarVehiculo(datos) {
     datos.apto = String(datos.apto).trim().toUpperCase();
     datos.placa = String(datos.placa).trim().toUpperCase();
 
-    var existente = buscarVehiculoRegistrado(datos.placa);
+    var hoja = obtenerHojaRegistro();
+    var existente = buscarVehiculoRegistrado(datos.placa, hoja);
 
     if (existente) {
       throw new Error(
@@ -294,15 +293,15 @@ function registrarVehiculo(datos) {
       );
     }
 
-    var urlTarjetaPropiedad = subirAnexoDrive(datos.anexoTarjetaPropiedad, datos.apto, datos.placa, "TarjetaPropiedad");
-    var urlSoat = subirAnexoDrive(datos.anexoSoat, datos.apto, datos.placa, "SOAT");
-    var urlTecnomecanica = subirAnexoDrive(datos.anexoTecnomecanica, datos.apto, datos.placa, "Tecnomecanica");
-    var urlCertificacionRetie = subirAnexoDrive(datos.anexoCertificacionRetie, datos.apto, datos.placa, "CertificacionRETIE");
-    var urlCartaAutorizacion = subirAnexoDrive(datos.anexoCartaAutorizacion, datos.apto, datos.placa, "CartaAutorizacion");
-    var urlCompromisoReglamento = subirAnexoDrive(datos.anexoCompromisoReglamento, datos.apto, datos.placa, "CompromisoReglamento");
-    var urlFirma = subirAnexoDrive(datos.firma, datos.apto, datos.placa, "Firma");
+    var carpetaApto = obtenerCarpetaApto(datos.apto);
 
-    var hoja = obtenerHojaRegistro();
+    var urlTarjetaPropiedad = subirAnexoDrive(datos.anexoTarjetaPropiedad, carpetaApto, datos.apto, datos.placa, "TarjetaPropiedad");
+    var urlSoat = subirAnexoDrive(datos.anexoSoat, carpetaApto, datos.apto, datos.placa, "SOAT");
+    var urlTecnomecanica = subirAnexoDrive(datos.anexoTecnomecanica, carpetaApto, datos.apto, datos.placa, "Tecnomecanica");
+    var urlCertificacionRetie = subirAnexoDrive(datos.anexoCertificacionRetie, carpetaApto, datos.apto, datos.placa, "CertificacionRETIE");
+    var urlCartaAutorizacion = subirAnexoDrive(datos.anexoCartaAutorizacion, carpetaApto, datos.apto, datos.placa, "CartaAutorizacion");
+    var urlCompromisoReglamento = subirAnexoDrive(datos.anexoCompromisoReglamento, carpetaApto, datos.apto, datos.placa, "CompromisoReglamento");
+    var urlFirma = subirAnexoDrive(datos.firma, carpetaApto, datos.apto, datos.placa, "Firma");
 
     hoja.appendRow([
       new Date(),
