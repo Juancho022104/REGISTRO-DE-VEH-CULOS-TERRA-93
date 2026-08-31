@@ -131,17 +131,20 @@
 <div class="anexo-item">
 <label>📄 Certificación RETIE del cargador</label>
 <input id="anexoCertificacionRetie" type="file" accept="application/pdf,image/*">
+<div class="consentimiento">
+<input type="checkbox" id="naCertificacionRetie">
+<label for="naCertificacionRetie">N/A - No cuento con este documento</label>
+</div>
 </div>
 
 <div class="anexo-item" id="itemCartaAutorizacion">
 <label>📄 Carta de autorización del propietario (obligatorio si es arrendatario)</label>
 <input id="anexoCartaAutorizacion" type="file" accept="application/pdf,image/*">
-<small>Solo obligatorio si la calidad seleccionada arriba es Arrendatario / Tenedor.</small>
+<div class="consentimiento">
+<input type="checkbox" id="naCartaAutorizacion">
+<label for="naCartaAutorizacion">N/A - No cuento con este documento</label>
 </div>
-
-<div class="anexo-item">
-<label>📄 Compromiso firmado de cumplimiento del Reglamento Interno para Cargadores Eléctricos</label>
-<input id="anexoCompromisoReglamento" type="file" accept="application/pdf,image/*">
+<small>Solo obligatorio si la calidad seleccionada arriba es Arrendatario / Tenedor.</small>
 </div>
 
 </div>
