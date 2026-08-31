@@ -252,18 +252,6 @@ function validarSolicitud(datos) {
     throw new Error("Adjunte la copia de la certificación tecnomecánica.");
   }
 
-  if (!datos.anexoCertificacionRetie) {
-    throw new Error("Adjunte la certificación RETIE del cargador.");
-  }
-
-  if (datos.calidad === "Arrendatario / Tenedor" && !datos.anexoCartaAutorizacion) {
-    throw new Error("Al ser arrendatario, debe adjuntar la carta de autorización del propietario.");
-  }
-
-  if (!datos.anexoCompromisoReglamento) {
-    throw new Error("Adjunte el compromiso firmado de cumplimiento del Reglamento Interno.");
-  }
-
   if (!datos.nombreFirmante) {
     throw new Error("El nombre completo del firmante es obligatorio.");
   }

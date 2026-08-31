@@ -291,7 +291,8 @@ function registrarVehiculoForm() {
   let inputTecnomecanica = document.getElementById("anexoTecnomecanica");
   let inputCertificacionRetie = document.getElementById("anexoCertificacionRetie");
   let inputCartaAutorizacion = document.getElementById("anexoCartaAutorizacion");
-  let inputCompromisoReglamento = document.getElementById("anexoCompromisoReglamento");
+  let naCertificacionRetie = document.getElementById("naCertificacionRetie").checked;
+  let naCartaAutorizacion = document.getElementById("naCartaAutorizacion").checked;
 
   if (!inputTarjeta.files.length) {
     alert("Adjunte la copia de la tarjeta de propiedad del vehículo");
@@ -308,18 +309,13 @@ function registrarVehiculoForm() {
     return;
   }
 
-  if (!inputCertificacionRetie.files.length) {
-    alert("Adjunte la certificación RETIE del cargador");
+  if (!inputCertificacionRetie.files.length && !naCertificacionRetie) {
+    alert("Adjunte la certificación RETIE del cargador o marque N/A si no cuenta con ella");
     return;
   }
 
-  if (datos.calidad === "Arrendatario / Tenedor" && !inputCartaAutorizacion.files.length) {
-    alert("Al ser arrendatario, debe adjuntar la carta de autorización del propietario");
-    return;
-  }
-
-  if (!inputCompromisoReglamento.files.length) {
-    alert("Adjunte el compromiso firmado de cumplimiento del Reglamento Interno");
+  if (datos.calidad === "Arrendatario / Tenedor" && !inputCartaAutorizacion.files.length && !naCartaAutorizacion) {
+    alert("Al ser arrendatario, adjunte la carta de autorización del propietario o marque N/A si no cuenta con ella");
     return;
   }
 
@@ -357,15 +353,13 @@ function registrarVehiculoForm() {
     convertirArchivoBase64(inputSoat),
     convertirArchivoBase64(inputTecnomecanica),
     convertirArchivoBase64(inputCertificacionRetie),
-    convertirArchivoBase64(inputCartaAutorizacion),
-    convertirArchivoBase64(inputCompromisoReglamento)
+    convertirArchivoBase64(inputCartaAutorizacion)
   ]).then(function (archivos) {
     datos.anexoTarjetaPropiedad = archivos[0];
     datos.anexoSoat = archivos[1];
     datos.anexoTecnomecanica = archivos[2];
     datos.anexoCertificacionRetie = archivos[3];
     datos.anexoCartaAutorizacion = archivos[4];
-    datos.anexoCompromisoReglamento = archivos[5];
     datos.firma = canvasFirma.toDataURL("image/png");
 
     google.script.run
